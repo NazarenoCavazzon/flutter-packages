@@ -4,7 +4,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../go_router.dart';
 import 'configuration.dart';
 import 'misc/errors.dart';
 
@@ -29,7 +28,7 @@ class GoRouterState {
     required this.pageKey,
   });
 
-  // TODO(johnpryan): remove once namedLocation is removed from go_router.
+  // TODO(johnpryan): remove once namedLocation is removed from go_router_flow.
   // See https://github.com/flutter/flutter/issues/107729
   final RouteConfiguration _configuration;
 

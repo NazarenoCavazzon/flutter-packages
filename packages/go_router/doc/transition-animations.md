@@ -24,7 +24,7 @@ GoRoute(
 ```
 
 For a complete example, see the [transition animations
-sample](https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/transition_animations.dart).
+sample](https://github.com/flutter/packages/blob/main/packages/go_router_flow/example/lib/transition_animations.dart).
 
 For more information on animations in Flutter, visit the
 [Animations](https://docs.flutter.dev/development/ui/animations) page on

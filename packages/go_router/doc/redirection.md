@@ -3,7 +3,7 @@ example, redirection can be used to display a sign-in screen if the user is not
 logged in.
 
 A redirect is a callback of the type
-[GoRouterRedirect](https://pub.dev/documentation/go_router/latest/go_router/GoRouterRedirect.html).
+[GoRouterRedirect](https://pub.dev/documentation/go_router_flow/latest/go_router_flow/GoRouterRedirect.html).
 To change incoming location based on some application state, add a callback to
 either the GoRouter or GoRoute constructor:
 
@@ -38,5 +38,5 @@ You can also redirect using [Named routes].
   GoRouter will display the error screen if this redirect limit is exceeded (See
   the [Error handling][] topic for more information on the error screen.)
 
-[Named routes]: https://pub.dev/documentation/go_router/latest/topics/Named%20routes-topic.html
-[Error handling]: https://pub.dev/documentation/go_router/topics/Error%20handling-topic.html
+[Named routes]: https://pub.dev/documentation/go_router_flow/latest/topics/Named%20routes-topic.html
+[Error handling]: https://pub.dev/documentation/go_router_flow/topics/Error%20handling-topic.html

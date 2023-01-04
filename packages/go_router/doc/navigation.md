@@ -47,7 +47,7 @@ GoRouter and other Router-based APIs are not compatible with the
 widget.
 
 See [issue #102408](https://github.com/flutter/flutter/issues/102408)
-for details on what such an API might look like in go_router.
+for details on what such an API might look like in go_router_flow.
 
 ## Imperative navigation with Navigator
 You can continue using the Navigator to push and pop pages. Pages displayed in
@@ -68,4 +68,4 @@ Navigator.of(context).push(
 );
 ```
 
-[Named routes]: https://pub.dev/documentation/go_router/latest/topics/Named%20routes-topic.html
+[Named routes]: https://pub.dev/documentation/go_router_flow/latest/topics/Named%20routes-topic.html

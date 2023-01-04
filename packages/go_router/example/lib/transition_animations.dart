@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router_flow/go_router_flow.dart';
 
 /// To use a custom transition animation, provide a `pageBuilder` with a
 /// CustomTransitionPage.

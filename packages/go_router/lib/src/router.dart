@@ -19,7 +19,7 @@ import 'typedefs.dart';
 /// empty and must contain an [GoRouter] to match `/`.
 ///
 /// See the [Get
-/// started](https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/main.dart)
+/// started](https://github.com/flutter/packages/blob/main/packages/go_router_flow/example/lib/main.dart)
 /// example, which shows an app with a simple route configuration.
 ///
 /// The [redirect] callback allows the app to redirect to a new location.
@@ -30,9 +30,9 @@ import 'typedefs.dart';
 /// changes.
 ///
 /// See also:
-/// * [Configuration](https://pub.dev/documentation/go_router/latest/topics/Configuration-topic.html)
+/// * [Configuration](https://pub.dev/documentation/go_router_flow/latest/topics/Configuration-topic.html)
 /// * [GoRoute], which provides APIs to define the routing table.
-/// * [examples](https://github.com/flutter/packages/tree/main/packages/go_router/example),
+/// * [examples](https://github.com/flutter/packages/tree/main/packages/go_router_flow/example),
 ///    which contains examples for different routing scenarios.
 /// {@category Get started}
 /// {@category Upgrading}
@@ -137,7 +137,7 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
   RouteConfiguration get routeConfiguration => _routeConfiguration;
 
   /// Gets the current location.
-  // TODO(chunhtai): deprecates this once go_router_builder is migrated to
+  // TODO(chunhtai): deprecates this once go_router_flow_builder is migrated to
   // GoRouterState.of.
   String get location => _location;
   String _location = '/';
@@ -204,32 +204,30 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
 
   /// Push a URI location onto the page stack w/ optional query parameters, e.g.
   /// `/family/f2/person/p1?color=blue`
-  void push(String location, {Object? extra}) {
+  Future<T?> push<T extends Object?>(String location, {Object? extra}) async {
     assert(() {
       log.info('pushing $location');
       return true;
     }());
-    _routeInformationParser
-        .parseRouteInformationWithDependencies(
+    final RouteMatchList matches =
+        await _routeInformationParser.parseRouteInformationWithDependencies(
       RouteInformation(location: location, state: extra),
       // TODO(chunhtai): avoid accessing the context directly through global key.
       // https://github.com/flutter/flutter/issues/99112
       _routerDelegate.navigatorKey.currentContext!,
-    )
-        .then<void>((RouteMatchList matches) {
-      _routerDelegate.push(matches);
-    });
+    );
+    return _routerDelegate.push<T>(matches);
   }
 
   /// Push a named route onto the page stack w/ optional parameters, e.g.
   /// `name='person', params={'fid': 'f2', 'pid': 'p1'}`
-  void pushNamed(
+  Future<T?> pushNamed<T extends Object?>(
     String name, {
     Map<String, String> params = const <String, String>{},
     Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
   }) =>
-      push(
+      push<T>(
         namedLocation(name, params: params, queryParams: queryParams),
         extra: extra,
       );

@@ -5,7 +5,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router_flow/go_router_flow.dart';
 
 void main() {
   group('updateShouldNotify', () {
@@ -129,11 +129,12 @@ class MockGoRouter extends GoRouter {
   late String latestPushedName;
 
   @override
-  void pushNamed(String name,
+  Future<T?> pushNamed<T extends Object?>(String name,
       {Map<String, String> params = const <String, String>{},
       Map<String, dynamic> queryParams = const <String, dynamic>{},
       Object? extra}) {
     latestPushedName = name;
+    return Future<T?>.value();
   }
 
   @override

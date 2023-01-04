@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-/// The [RouteInformationProvider] created by go_router.
+/// The [RouteInformationProvider] created by go_router_flow.
 class GoRouteInformationProvider extends RouteInformationProvider
     with WidgetsBindingObserver, ChangeNotifier {
   /// Creates a [GoRouteInformationProvider].

@@ -37,17 +37,17 @@ extension GoRouterHelper on BuildContext {
       );
 
   /// Push a location onto the page stack.
-  void push(String location, {Object? extra}) =>
+  Future<T?> push<T extends Object?>(String location, {Object? extra}) =>
       GoRouter.of(this).push(location, extra: extra);
 
   /// Navigate to a named route onto the page stack.
-  void pushNamed(
+  Future<T?> pushNamed<T extends Object?>(
     String name, {
     Map<String, String> params = const <String, String>{},
     Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
   }) =>
-      GoRouter.of(this).pushNamed(
+      GoRouter.of(this).pushNamed<T>(
         name,
         params: params,
         queryParams: queryParams,
@@ -59,7 +59,7 @@ extension GoRouterHelper on BuildContext {
 
   /// Pop the top page off the Navigator's page stack by calling
   /// [Navigator.pop].
-  void pop() => GoRouter.of(this).pop();
+  void pop<T extends Object?>([T? result]) => GoRouter.of(this).pop(result);
 
   /// Replaces the top-most page of the page stack with the given URL location
   /// w/ optional query parameters, e.g. `/family/f2/person/p1?color=blue`.

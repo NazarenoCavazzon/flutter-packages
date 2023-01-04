@@ -12,7 +12,7 @@ import 'route.dart';
 import 'state.dart';
 
 /// Baseclass for supporting
-/// [Type-safe routing](https://pub.dev/documentation/go_router/latest/topics/Type-safe%20routes-topic.html).
+/// [Type-safe routing](https://pub.dev/documentation/go_router_flow/latest/topics/Type-safe%20routes-topic.html).
 ///
 /// Subclasses must override one of [build], [buildPage], or
 /// [redirect].

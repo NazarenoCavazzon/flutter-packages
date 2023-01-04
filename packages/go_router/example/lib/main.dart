@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router_flow/go_router_flow.dart';
 
 /// This sample app shows an app with two screens.
 ///
@@ -25,6 +25,7 @@ final GoRouter _router = GoRouter(
       },
       routes: <RouteBase>[
         GoRoute(
+          name: 'messi',
           path: 'details',
           builder: (BuildContext context, GoRouterState state) {
             return const DetailsScreen();
@@ -62,7 +63,10 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              onPressed: () => context.go('/details'),
+              onPressed: () async {
+                final String? result = await context.pushNamed<String>('messi');
+                print(result);
+              },
               child: const Text('Go to the Details screen'),
             ),
           ],
@@ -86,7 +90,7 @@ class DetailsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <ElevatedButton>[
             ElevatedButton(
-              onPressed: () => context.go('/'),
+              onPressed: () => context.pop('Meeeeeesi'),
               child: const Text('Go back to the Home screen'),
             ),
           ],
