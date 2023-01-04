@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:path/path.dart' as p;
-
-import 'process_utils.dart';
+import 'package:pigeon/pigeon.dart';
 
 enum GeneratorLanguages {
   cpp,
@@ -52,11 +51,10 @@ Future<int> generatePigeons({required String baseDir}) async {
   // TODO(stuartmorgan): Make this dynamic rather than hard-coded. Or eliminate
   // it entirely; see https://github.com/flutter/flutter/issues/115169.
   const List<String> inputs = <String>[
-    'all_datatypes',
-    'all_void',
     'android_unittests',
     'async_handlers',
     'background_platform_channels',
+    'core_tests',
     'enum_args',
     'enum',
     'host2flutter',
@@ -77,10 +75,8 @@ Future<int> generatePigeons({required String baseDir}) async {
   final String outputBase = p.join(baseDir, 'platform_tests', 'test_plugin');
   final String alternateOutputBase =
       p.join(baseDir, 'platform_tests', 'alternate_language_test_plugin');
-  // TODO(stuartmorgan): Eliminate this and use alternateOutputBase.
-  // See https://github.com/flutter/packages/pull/2816.
-  final String iosObjCBase =
-      p.join(baseDir, 'platform_tests', 'ios_unit_tests');
+  final String sharedDartOutputBase =
+      p.join(baseDir, 'platform_tests', 'shared_test_plugin_code');
 
   for (final String input in inputs) {
     final String pascalCaseName = _snakeToPascalCase(input);
@@ -90,7 +86,7 @@ Future<int> generatePigeons({required String baseDir}) async {
     // Generate the default language test plugin output.
     int generateCode = await runPigeon(
       input: './pigeons/$input.dart',
-      dartOut: '$outputBase/lib/$input.gen.dart',
+      dartOut: '$sharedDartOutputBase/lib/src/generated/$input.gen.dart',
       // Android
       kotlinOut: skipLanguages.contains(GeneratorLanguages.kotlin)
           ? null
@@ -103,10 +99,10 @@ Future<int> generatePigeons({required String baseDir}) async {
       // Windows
       cppHeaderOut: skipLanguages.contains(GeneratorLanguages.cpp)
           ? null
-          : '$outputBase/windows/test/$input.gen.h',
+          : '$outputBase/windows/pigeon/$input.gen.h',
       cppSourceOut: skipLanguages.contains(GeneratorLanguages.cpp)
           ? null
-          : '$outputBase/windows/test/$input.gen.cpp',
+          : '$outputBase/windows/pigeon/$input.gen.cpp',
       cppNamespace: '${input}_pigeontest',
     );
     if (generateCode != 0) {
@@ -129,7 +125,6 @@ Future<int> generatePigeons({required String baseDir}) async {
     // Generate the alternate language test plugin output.
     generateCode = await runPigeon(
       input: './pigeons/$input.dart',
-      dartOut: '$alternateOutputBase/lib/$input.gen.dart',
       // Android
       // This doesn't use the '.gen' suffix since Java has strict file naming
       // rules.
@@ -141,10 +136,10 @@ Future<int> generatePigeons({required String baseDir}) async {
       // iOS
       objcHeaderOut: skipLanguages.contains(GeneratorLanguages.objc)
           ? null
-          : '$iosObjCBase/ios/Runner/$pascalCaseName.gen.h',
+          : '$alternateOutputBase/ios/Classes/$pascalCaseName.gen.h',
       objcSourceOut: skipLanguages.contains(GeneratorLanguages.objc)
           ? null
-          : '$iosObjCBase/ios/Runner/$pascalCaseName.gen.m',
+          : '$alternateOutputBase/ios/Classes/$pascalCaseName.gen.m',
     );
     if (generateCode != 0) {
       return generateCode;
@@ -167,65 +162,24 @@ Future<int> runPigeon({
   String? javaPackage,
   String? objcHeaderOut,
   String? objcSourceOut,
-  bool streamOutput = true,
 }) async {
-  const bool hasDart = false;
-  final List<String> args = <String>[
-    'run',
-    'pigeon',
-    '--input',
-    input,
-    '--copyright_header',
-    './copyright_header.txt',
-  ];
-  if (kotlinOut != null) {
-    args.addAll(<String>['--experimental_kotlin_out', kotlinOut]);
-  }
-  if (kotlinPackage != null) {
-    args.addAll(<String>['--experimental_kotlin_package', kotlinPackage]);
-  }
-  if (swiftOut != null) {
-    args.addAll(<String>['--experimental_swift_out', swiftOut]);
-  }
-  if (cppHeaderOut != null) {
-    args.addAll(<String>[
-      '--experimental_cpp_header_out',
-      cppHeaderOut,
-    ]);
-  }
-  if (cppSourceOut != null) {
-    args.addAll(<String>[
-      '--experimental_cpp_source_out',
-      cppSourceOut,
-    ]);
-  }
-  if (cppNamespace != null) {
-    args.addAll(<String>[
-      '--cpp_namespace',
-      cppNamespace,
-    ]);
-  }
-  if (dartOut != null) {
-    args.addAll(<String>['--dart_out', dartOut]);
-  }
-  if (dartTestOut != null) {
-    args.addAll(<String>['--dart_test_out', dartTestOut]);
-  }
-  if (!hasDart) {
-    args.add('--one_language');
-  }
-  if (javaOut != null) {
-    args.addAll(<String>['--java_out', javaOut]);
-  }
-  if (javaPackage != null) {
-    args.addAll(<String>['--java_package', javaPackage]);
-  }
-  if (objcHeaderOut != null) {
-    args.addAll(<String>['--objc_header_out', objcHeaderOut]);
-  }
-  if (objcSourceOut != null) {
-    args.addAll(<String>['--objc_source_out', objcSourceOut]);
-  }
-  return runProcess('dart', args,
-      streamOutput: streamOutput, logFailure: !streamOutput);
+  return Pigeon.runWithOptions(PigeonOptions(
+    input: input,
+    copyrightHeader: './copyright_header.txt',
+    dartOut: dartOut,
+    dartTestOut: dartTestOut,
+    dartOptions: const DartOptions(),
+    cppHeaderOut: cppHeaderOut,
+    cppSourceOut: cppSourceOut,
+    cppOptions: CppOptions(namespace: cppNamespace),
+    javaOut: javaOut,
+    javaOptions: JavaOptions(package: javaPackage),
+    kotlinOut: kotlinOut,
+    kotlinOptions: KotlinOptions(package: kotlinPackage),
+    objcHeaderOut: objcHeaderOut,
+    objcSourceOut: objcSourceOut,
+    objcOptions: const ObjcOptions(),
+    swiftOut: swiftOut,
+    swiftOptions: const SwiftOptions(),
+  ));
 }

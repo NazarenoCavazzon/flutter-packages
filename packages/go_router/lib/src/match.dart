@@ -21,6 +21,7 @@ class RouteMatch {
     required this.completer,
     required this.error,
     required this.pageKey,
+    this.completer,
   });
 
   // ignore: public_member_api_docs
@@ -31,6 +32,7 @@ class RouteMatch {
     required Map<String, String> pathParameters,
     Completer<dynamic>? completer,
     required Object? extra,
+    Completer<dynamic>? completer,
   }) {
     if (route is ShellRoute) {
       return RouteMatch(
@@ -40,6 +42,7 @@ class RouteMatch {
         completer: completer,
         error: null,
         pageKey: ValueKey<String>(route.hashCode.toString()),
+        completer: completer,
       );
     } else if (route is GoRoute) {
       assert(!route.path.contains('//'));
@@ -62,6 +65,7 @@ class RouteMatch {
         completer: completer,
         error: null,
         pageKey: ValueKey<String>(route.hashCode.toString()),
+        completer: completer,
       );
     }
     throw MatcherError('Unexpected route type: $route', restLoc);
@@ -84,4 +88,7 @@ class RouteMatch {
 
   /// Optional value key of type string, to hold a unique reference to a page.
   final ValueKey<String> pageKey;
+
+  /// Optional completer to be completed when the page is popped.
+  final Completer<dynamic>? completer;
 }

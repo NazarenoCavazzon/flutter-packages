@@ -287,4 +287,3 @@ for a list of new features and breaking changes.
 - [Maximo Verzini](https://github.com/extrordinaire)
 - [Tomás Tisocco](https://github.com/tomasatisocco)
 
-

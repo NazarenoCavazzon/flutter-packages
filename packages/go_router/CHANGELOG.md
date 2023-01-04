@@ -1,3 +1,7 @@
+## 6.0.0
+
+- Updated to go_router 6.0.0
+
 ## 5.2.0+1
 
 - .go flow fixed

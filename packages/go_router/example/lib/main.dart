@@ -25,6 +25,7 @@ final GoRouter _router = GoRouter(
       },
       routes: <RouteBase>[
         GoRoute(
+          name: 'messi',
           path: 'details',
           builder: (BuildContext context, GoRouterState state) {
             return const DetailsScreen();
@@ -63,8 +64,8 @@ class HomeScreen extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               onPressed: () async {
-                final result = await context.push<bool>('/details');
-                print('VALOR: $result');
+                final String? result = await context.pushNamed<String>('messi');
+                print(result);
               },
               child: const Text('Go to the Details screen'),
             ),
@@ -89,7 +90,7 @@ class DetailsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <ElevatedButton>[
             ElevatedButton(
-              onPressed: () => context.pop(true),
+              onPressed: () => context.pop('Meeeeeesi'),
               child: const Text('Go back to the Home screen'),
             ),
           ],

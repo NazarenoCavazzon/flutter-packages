@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 
 import 'configuration.dart';
@@ -21,7 +19,7 @@ import 'typedefs.dart';
 /// empty and must contain an [GoRouter] to match `/`.
 ///
 /// See the [Get
-/// started](https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/main.dart)
+/// started](https://github.com/flutter/packages/blob/main/packages/go_router_flow/example/lib/main.dart)
 /// example, which shows an app with a simple route configuration.
 ///
 /// The [redirect] callback allows the app to redirect to a new location.
@@ -32,9 +30,9 @@ import 'typedefs.dart';
 /// changes.
 ///
 /// See also:
-/// * [Configuration](https://pub.dev/documentation/go_router/topics/Configuration-topic.html)
+/// * [Configuration](https://pub.dev/documentation/go_router_flow/latest/topics/Configuration-topic.html)
 /// * [GoRoute], which provides APIs to define the routing table.
-/// * [examples](https://github.com/flutter/packages/tree/main/packages/go_router/example),
+/// * [examples](https://github.com/flutter/packages/tree/main/packages/go_router_flow/example),
 ///    which contains examples for different routing scenarios.
 /// {@category Get started}
 /// {@category Upgrading}
@@ -139,12 +137,12 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
   RouteConfiguration get routeConfiguration => _routeConfiguration;
 
   /// Gets the current location.
-  // TODO(chunhtai): deprecates this once go_router_builder is migrated to
+  // TODO(chunhtai): deprecates this once go_router_flow_builder is migrated to
   // GoRouterState.of.
   String get location => _location;
   String _location = '/';
 
-  /// Returns `true` if there is more than 1 page on the stack.
+  /// Returns `true` if there is at least two or more route can be pop.
   bool canPop() => _routerDelegate.canPop();
 
   void _handleStateMayChange() {
@@ -204,8 +202,8 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
         extra: extra,
       );
 
-  /// Push a URI location onto the page stack w/ optional query parameters
-  /// and promise, e.g. `/family/f2/person/p1?color=blue`.
+  /// Push a URI location onto the page stack w/ optional query parameters, e.g.
+  /// `/family/f2/person/p1?color=blue`
   Future<T?> push<T extends Object?>(String location, {Object? extra}) async {
     assert(() {
       log.info('pushing $location');
@@ -218,31 +216,21 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
       // https://github.com/flutter/flutter/issues/99112
       _routerDelegate.navigatorKey.currentContext!,
     );
-
-    return _routerDelegate.push<T?>(matches);
+    return _routerDelegate.push<T>(matches);
   }
 
-  /// Push a named route asynchronously onto the page stack w/ optional
-  /// parameters and promise.
+  /// Push a named route onto the page stack w/ optional parameters, e.g.
+  /// `name='person', params={'fid': 'f2', 'pid': 'p1'}`
   Future<T?> pushNamed<T extends Object?>(
     String name, {
     Map<String, String> params = const <String, String>{},
     Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
   }) =>
-      push<T?>(
+      push<T>(
         namedLocation(name, params: params, queryParams: queryParams),
         extra: extra,
       );
-
-  /// Pop the top page off the GoRouter's page stack.
-  void pop<T extends Object?>([T? result]) {
-    assert(() {
-      log.info('popping $location');
-      return true;
-    }());
-    routerDelegate.pop(result);
-  }
 
   /// Replaces the top-most page of the page stack with the given URL location
   /// w/ optional query parameters, e.g. `/family/f2/person/p1?color=blue`.
@@ -250,17 +238,17 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
   /// See also:
   /// * [go] which navigates to the location.
   /// * [push] which pushes the location onto the page stack.
-  Future<T?> replace<T extends Object?>(String location,
-      {Object? extra}) async {
-    final RouteMatchList matches =
-        await routeInformationParser.parseRouteInformationWithDependencies(
+  void pushReplacement(String location, {Object? extra}) {
+    routeInformationParser
+        .parseRouteInformationWithDependencies(
       RouteInformation(location: location, state: extra),
       // TODO(chunhtai): avoid accessing the context directly through global key.
       // https://github.com/flutter/flutter/issues/99112
       _routerDelegate.navigatorKey.currentContext!,
-    );
-
-    return routerDelegate.replace<T?>(matches);
+    )
+        .then<void>((RouteMatchList matchList) {
+      routerDelegate.pushReplacement(matchList);
+    });
   }
 
   /// Replaces the top-most page of the page stack with the named route w/
@@ -270,16 +258,29 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
   /// See also:
   /// * [goNamed] which navigates a named route.
   /// * [pushNamed] which pushes a named route onto the page stack.
-  Future<T?> replaceNamed<T extends Object?>(
+  void pushReplacementNamed(
     String name, {
     Map<String, String> params = const <String, String>{},
     Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
-  }) =>
-      replace<T?>(
-        namedLocation(name, params: params, queryParams: queryParams),
-        extra: extra,
-      );
+  }) {
+    pushReplacement(
+      namedLocation(name, params: params, queryParams: queryParams),
+      extra: extra,
+    );
+  }
+
+  /// Pop the top-most route off the current screen.
+  ///
+  /// If the top-most route is a pop up or dialog, this method pops it instead
+  /// of any GoRoute under it.
+  void pop<T extends Object?>([T? result]) {
+    assert(() {
+      log.info('popping $location');
+      return true;
+    }());
+    _routerDelegate.pop<T>(result);
+  }
 
   /// Refresh the route.
   void refresh() {

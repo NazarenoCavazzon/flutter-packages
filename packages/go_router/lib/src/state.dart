@@ -4,7 +4,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../go_router_flow.dart';
 import 'configuration.dart';
 import 'misc/errors.dart';
 

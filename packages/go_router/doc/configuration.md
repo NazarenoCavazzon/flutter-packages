@@ -29,9 +29,9 @@ GoRoute(
 ```
 
 To navigate to this route, use
-[go()](https://pub.dev/documentation/go_router/latest/go_router/GoRouter/go.html).
+[go()](https://pub.dev/documentation/go_router_flow/latest/go_router_flow/GoRouter/go.html).
 To learn more about how navigation, visit the
-[Navigation](https://pub.dev/documentation/go_router/topics/Configuration-topic.html)
+[Navigation](https://pub.dev/documentation/go_router_flow/topics/Configuration-topic.html)
 topic.
 
 # Parameters
@@ -91,7 +91,7 @@ app using a BottomNavigationBar that stays on-screen when navigating between
 destinations.
 
 To add an additional Navigator, use
-[ShellRoute](https://pub.dev/documentation/go_router/ShellRoute-class.html)
+[ShellRoute](https://pub.dev/documentation/go_router_flow/ShellRoute-class.html)
 and provide a builder that returns a widget:
 
 ```dart
@@ -120,9 +120,9 @@ ShellRoute(
 The `child` widget is a Navigator configured to display the matching sub-routes.
 
 For more details, see the [ShellRoute API
-documentation](https://pub.dev/documentation/go_router/latest/go_router/ShellRoute-class.html).
+documentation](https://pub.dev/documentation/go_router_flow/latest/go_router_flow/ShellRoute-class.html).
 For a complete example, see the [ShellRoute
-sample](https://github.com/flutter/packages/tree/main/packages/go_router/example/lib/shell_route.dart)
+sample](https://github.com/flutter/packages/tree/main/packages/go_router_flow/example/lib/shell_route.dart)
 in the example/ directory.
 
 # Initial location
@@ -150,6 +150,6 @@ final _router = GoRouter(
 );
 ```
 
-[GoRouter]: https://pub.dev/documentation/go_router/latest/go_router/GoRouter-class.html
-[GoRoute]: https://pub.dev/documentation/go_router/latest/go_router/GoRoute-class.html
-[GoRouterState]: https://pub.dev/documentation/go_router/latest/go_router/GoRouterState-class.html
+[GoRouter]: https://pub.dev/documentation/go_router_flow/latest/go_router_flow/GoRouter-class.html
+[GoRoute]: https://pub.dev/documentation/go_router_flow/latest/go_router_flow/GoRoute-class.html
+[GoRouterState]: https://pub.dev/documentation/go_router_flow/latest/go_router_flow/GoRouterState-class.html

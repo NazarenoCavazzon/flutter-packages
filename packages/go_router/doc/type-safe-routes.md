@@ -1,23 +1,23 @@
-Instead of using URL strings to navigate, go_router supports
-type-safe routes using the go_router_builder package. 
+Instead of using URL strings to navigate, go_router_flow supports
+type-safe routes using the go_router_flow_builder package. 
 
-To get started, add [go_router_builder][], [build_runner][], and
+To get started, add [go_router_flow_builder][], [build_runner][], and
 [build_verify][] to the dev_dependencies section of your pubspec.yaml:
 
 ```yaml
 dev_dependencies:
-  go_router_builder: any
+  go_router_flow_builder: any
   build_runner: any
   build_verify: any
 ```
 
-Then extend the [GoRouteData](https://pub.dev/documentation/go_router/latest/go_router/GoRouteData-class.html) class for each route in your app and add the
+Then extend the [GoRouteData](https://pub.dev/documentation/go_router_flow/latest/go_router_flow/GoRouteData-class.html) class for each route in your app and add the
 TypedGoRoute annotation:
 
 ```dart
-import 'package:go_router/go_router.dart';
+import 'package:go_router_flow/go_router_flow.dart';
 
-part 'go_router_builder.g.dart';
+part 'go_router_flow_builder.g.dart';
 
 @TypedGoRoute<HomeScreenRoute>(
     path: '/',
@@ -69,9 +69,9 @@ TextButton(
 ),
 ```
 
-For more information, visit the [go_router_builder
-package documentation](https://pub.dev/documentation/go_router_builder/latest/).
+For more information, visit the [go_router_flow_builder
+package documentation](https://pub.dev/documentation/go_router_flow_builder/latest/).
 
-[go_router_builder]: https://pub.dev/packages/go_router_builder
+[go_router_flow_builder]: https://pub.dev/packages/go_router_flow_builder
 [build_runner]: https://pub.dev/packages/build_runner
 [build_verify]: https://pub.dev/packages/build_verify

@@ -134,7 +134,7 @@ class MockGoRouter extends GoRouter {
       Map<String, dynamic> queryParams = const <String, dynamic>{},
       Object? extra}) {
     latestPushedName = name;
-    return Future<T>.value();
+    return Future<T?>.value();
   }
 
   @override

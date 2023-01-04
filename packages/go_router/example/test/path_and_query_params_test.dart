@@ -4,7 +4,8 @@
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router_examples/path_and_query_parameters.dart' as example;
+import 'package:go_router_flow_examples/path_and_query_parameters.dart'
+    as example;
 
 void main() {
   testWidgets('example works', (WidgetTester tester) async {

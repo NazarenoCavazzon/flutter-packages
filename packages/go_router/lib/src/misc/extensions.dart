@@ -36,11 +36,11 @@ extension GoRouterHelper on BuildContext {
         extra: extra,
       );
 
-  /// Push a location onto the page stack with an optional promise.
+  /// Push a location onto the page stack.
   Future<T?> push<T extends Object?>(String location, {Object? extra}) =>
-      GoRouter.of(this).push<T?>(location, extra: extra);
+      GoRouter.of(this).push(location, extra: extra);
 
-  /// Navigate to a named route onto the page stack with an optional promise.
+  /// Navigate to a named route onto the page stack.
   Future<T?> pushNamed<T extends Object?>(
     String name, {
     Map<String, String> params = const <String, String>{},
@@ -59,7 +59,7 @@ extension GoRouterHelper on BuildContext {
 
   /// Pop the top page off the Navigator's page stack by calling
   /// [Navigator.pop].
-  void pop<T extends Object?>([T? value]) => GoRouter.of(this).pop<T>(value);
+  void pop<T extends Object?>([T? result]) => GoRouter.of(this).pop(result);
 
   /// Replaces the top-most page of the page stack with the given URL location
   /// w/ optional query parameters, e.g. `/family/f2/person/p1?color=blue`.
@@ -67,8 +67,8 @@ extension GoRouterHelper on BuildContext {
   /// See also:
   /// * [go] which navigates to the location.
   /// * [push] which pushes the location onto the page stack.
-  Future<T?> replace<T extends Object?>(String location, {Object? extra}) =>
-      GoRouter.of(this).replace<T>(location, extra: extra);
+  void pushReplacement(String location, {Object? extra}) =>
+      GoRouter.of(this).pushReplacement(location, extra: extra);
 
   /// Replaces the top-most page of the page stack with the named route w/
   /// optional parameters, e.g. `name='person', params={'fid': 'f2', 'pid':
@@ -77,13 +77,13 @@ extension GoRouterHelper on BuildContext {
   /// See also:
   /// * [goNamed] which navigates a named route.
   /// * [pushNamed] which pushes a named route onto the page stack.
-  Future<T?> replaceNamed<T extends Object?>(
+  void pushReplacementNamed(
     String name, {
     Map<String, String> params = const <String, String>{},
     Map<String, dynamic> queryParams = const <String, dynamic>{},
     Object? extra,
   }) =>
-      GoRouter.of(this).replaceNamed<T?>(
+      GoRouter.of(this).pushReplacementNamed(
         name,
         params: params,
         queryParams: queryParams,

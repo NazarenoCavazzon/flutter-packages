@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router_examples/shell_route.dart' as example;
+import 'package:go_router_flow_examples/shell_route.dart' as example;
 
 void main() {
   testWidgets('example works', (WidgetTester tester) async {
