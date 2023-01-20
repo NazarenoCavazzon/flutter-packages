@@ -137,7 +137,7 @@ class GoRouter extends ChangeNotifier implements RouterConfig<RouteMatchList> {
   RouteConfiguration get routeConfiguration => _routeConfiguration;
 
   /// Gets the current location.
-  // TODO(chunhtai): deprecates this once go_router_flow_builder is migrated to
+  // TODO(chunhtai): deprecates this once go_router_builder is migrated to
   // GoRouterState.of.
   String get location => _location;
   String _location = '/';
