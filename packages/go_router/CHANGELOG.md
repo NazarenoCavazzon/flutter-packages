@@ -1,3 +1,7 @@
+## 6.0.0+1
+
+- Description change
+
 ## 6.0.0
 
 - Updated to go_router 6.0.0
