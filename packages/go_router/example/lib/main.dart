@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router_flow/go_router_flow.dart';
 
@@ -65,7 +67,7 @@ class HomeScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 final String? result = await context.pushNamed<String>('messi');
-                print(result);
+                log('$result');
               },
               child: const Text('Go to the Details screen'),
             ),

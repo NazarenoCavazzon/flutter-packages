@@ -2708,7 +2708,7 @@ void main() {
           title: 'GoRouter Example',
         ),
       );
-      final String? result = await key.currentContext?.push<String>(
+      final String? result = await router.push<String>(
         location,
         extra: extra,
       );
@@ -2749,7 +2749,7 @@ void main() {
           title: 'GoRouter Example',
         ),
       );
-      final String? result = await key.currentContext?.pushNamed<String>(
+      final String? result = await router.pushNamed<String>(
         name,
         params: params,
         queryParams: queryParams,

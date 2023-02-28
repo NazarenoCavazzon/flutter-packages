@@ -98,7 +98,7 @@ class GoRouterPushSpy extends GoRouter {
   Future<T?> push<T extends Object?>(String location, {Object? extra}) {
     myLocation = location;
     this.extra = extra;
-    return Future<T?>.value();
+    return Future<T?>.value(extra as T?);
   }
 }
 
@@ -121,7 +121,7 @@ class GoRouterPushNamedSpy extends GoRouter {
     this.params = params;
     this.queryParams = queryParams;
     this.extra = extra;
-    return Future<T?>.value();
+    return Future<T?>.value(extra as T?);
   }
 }
 
