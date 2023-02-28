@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 import 'configuration.dart';
@@ -50,6 +51,22 @@ class RouteBuilder {
 
   final GoRouterStateRegistry _registry = GoRouterStateRegistry();
 
+  final Map<Page<Object?>, RouteMatch> _routeMatchLookUp =
+      <Page<Object?>, RouteMatch>{};
+
+  /// Looks the the [RouteMatch] for a given [Page].
+  ///
+  /// The [Page] must be in the latest [Navigator.pages]; otherwise, this method
+  /// returns null.
+  RouteMatch? getRouteMatchForPage(Page<Object?> page) =>
+      _routeMatchLookUp[page];
+
+  // final Map<>
+  /// Caches a HeroController for the nested Navigator, which solves cases where the
+  /// Hero Widget animation stops working when navigating.
+  final Map<GlobalKey<NavigatorState>, HeroController> _goHeroCache =
+      <GlobalKey<NavigatorState>, HeroController>{};
+
   /// Builds the top-level Navigator for the given [RouteMatchList].
   Widget build(
     BuildContext context,
@@ -57,6 +74,7 @@ class RouteBuilder {
     PopPageCallback onPopPage,
     bool routerNeglect,
   ) {
+    _routeMatchLookUp.clear();
     if (matchList.isEmpty) {
       // The build method can be called before async redirect finishes. Build a
       // empty box until then.
@@ -118,16 +136,25 @@ class RouteBuilder {
       bool routerNeglect,
       GlobalKey<NavigatorState> navigatorKey,
       Map<Page<Object?>, GoRouterState> registry) {
+    final Map<GlobalKey<NavigatorState>, List<Page<Object?>>> keyToPage =
+        <GlobalKey<NavigatorState>, List<Page<Object?>>>{};
     try {
-      final Map<GlobalKey<NavigatorState>, List<Page<Object?>>> keyToPage =
-          <GlobalKey<NavigatorState>, List<Page<Object?>>>{};
+      assert(_routeMatchLookUp.isEmpty);
       _buildRecursive(context, matchList, 0, onPopPage, routerNeglect,
           keyToPage, navigatorKey, registry);
+
+      // Every Page should have a corresponding RouteMatch.
+      assert(keyToPage.values.flattened
+          .every((Page<Object?> page) => _routeMatchLookUp.containsKey(page)));
       return keyToPage[navigatorKey]!;
     } on _RouteBuilderError catch (e) {
       return <Page<Object?>>[
         _buildErrorPage(context, e, matchList.uri),
       ];
+    } finally {
+      /// Clean up previous cache to prevent memory leak.
+      _goHeroCache.removeWhere(
+          (GlobalKey<NavigatorState> key, _) => !keyToPage.keys.contains(key));
     }
   }
 
@@ -172,6 +199,10 @@ class RouteBuilder {
       // The key to provide to the ShellRoute's Navigator.
       final GlobalKey<NavigatorState> shellNavigatorKey = route.navigatorKey;
 
+      // The observers list for the ShellRoute's Navigator.
+      final List<NavigatorObserver> observers =
+          route.observers ?? <NavigatorObserver>[];
+
       // Add an entry for the parent navigator if none exists.
       keyToPages.putIfAbsent(parentNavigatorKey, () => <Page<Object?>>[]);
 
@@ -187,9 +218,15 @@ class RouteBuilder {
       _buildRecursive(context, matchList, startIndex + 1, onPopPage,
           routerNeglect, keyToPages, shellNavigatorKey, registry);
 
+      final HeroController heroController = _goHeroCache.putIfAbsent(
+          shellNavigatorKey, () => _getHeroController(context));
       // Build the Navigator
-      final Widget child = _buildNavigator(
-          onPopPage, keyToPages[shellNavigatorKey]!, shellNavigatorKey);
+      final Widget child = HeroControllerScope(
+        controller: heroController,
+        child: _buildNavigator(
+            onPopPage, keyToPages[shellNavigatorKey]!, shellNavigatorKey,
+            observers: observers),
+      );
 
       // Build the Page for this route
       final Page<Object?> page =
@@ -271,12 +308,13 @@ class RouteBuilder {
       page = null;
     }
 
+    page ??= buildPage(context, state, Builder(builder: (BuildContext context) {
+      return _callRouteBuilder(context, state, match, childWidget: child);
+    }));
+    _routeMatchLookUp[page] = match;
+
     // Return the result of the route's builder() or pageBuilder()
-    return page ??
-        // Uses a Builder to make sure its rebuild scope is limited to the page.
-        buildPage(context, state, Builder(builder: (BuildContext context) {
-          return _callRouteBuilder(context, state, match, childWidget: child);
-        }));
+    return page;
   }
 
   /// Calls the user-provided route builder from the [RouteMatch]'s [RouteBase].
@@ -284,10 +322,6 @@ class RouteBuilder {
       BuildContext context, GoRouterState state, RouteMatch match,
       {Widget? childWidget}) {
     final RouteBase route = match.route;
-
-    if (route == null) {
-      throw _RouteBuilderError('No route found for match: $match');
-    }
 
     if (route is GoRoute) {
       final GoRouterWidgetBuilder? builder = route.builder;
@@ -363,7 +397,7 @@ class RouteBuilder {
     _cacheAppType(context);
     return _pageBuilderForAppType!(
       key: state.pageKey,
-      name: state.name ?? state.fullpath,
+      name: state.name ?? state.path,
       arguments: <String, String>{...state.params, ...state.queryParams},
       restorationId: state.pageKey.value,
       child: child,
@@ -434,6 +468,18 @@ class RouteBuilder {
                 ? errorBuilder(context, state)
                 : _errorBuilderForAppType!(context, state),
           );
+  }
+
+  /// Return a HeroController based on the app type.
+  HeroController _getHeroController(BuildContext context) {
+    if (context is Element) {
+      if (isMaterialApp(context)) {
+        return createMaterialHeroController();
+      } else if (isCupertinoApp(context)) {
+        return createCupertinoHeroController();
+      }
+    }
+    return HeroController();
   }
 }
 

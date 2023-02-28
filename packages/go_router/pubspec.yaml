@@ -1,6 +1,6 @@
 name: go_router_flow
 description: This is a fork of the go_router package that let's you communicate between pages by returning values on pop like in navigator 1.0.
-version: 6.0.0+3
+version: 6.2.0
 repository: https://github.com/NazarenoCavazzon/flutter-packages/tree/main/packages/go_router
 
 environment:
